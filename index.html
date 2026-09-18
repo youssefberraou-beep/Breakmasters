@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Break Masters — Pool Game</title>
+<style>
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#07110d;color:#fff;overflow-x:hidden}
+nav{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:18px 6%;background:rgba(4,12,9,.72);backdrop-filter:blur(12px)}
+.logo{font-weight:900;letter-spacing:1px;font-size:22px}.logo span{color:#55e36b}.navlinks{display:flex;gap:25px}.navlinks a{color:#dce9df;text-decoration:none;font-size:14px}
+.btn{display:inline-block;padding:14px 24px;border-radius:30px;text-decoration:none;font-weight:800;cursor:pointer;border:0;background:#55e36b;color:#061009;box-shadow:0 10px 30px rgba(85,227,107,.22);transition:.2s}.btn:hover{transform:translateY(-2px);filter:brightness(1.08)}
+.hero{min-height:100vh;padding:150px 7% 80px;display:grid;grid-template-columns:1fr 1fr;gap:45px;align-items:center;background:radial-gradient(circle at 75% 45%,#164b2b 0,#07110d 48%,#030806 100%)}
+.badge{display:inline-block;padding:8px 14px;border:1px solid #356b45;border-radius:20px;color:#8ff29f;background:#0c2115;font-size:12px;font-weight:800;letter-spacing:1px}
+h1{font-size:clamp(48px,7vw,86px);line-height:.92;margin:20px 0}.hero p{font-size:19px;line-height:1.6;color:#b8c8bd;max-width:560px}.actions{display:flex;gap:14px;align-items:center;margin-top:28px}.ghost{color:#fff;border:1px solid #45614d;background:transparent;box-shadow:none}
+.table{position:relative;width:min(560px,100%);aspect-ratio:1.35;background:#13743d;border:24px solid #5b351b;border-radius:34px;box-shadow:0 35px 70px rgba(0,0,0,.55),inset 0 0 30px #062b16;transform:rotate(-4deg)}
+.table:before{content:"";position:absolute;inset:-13px;border:5px solid #9b642e;border-radius:25px;pointer-events:none}.pocket{position:absolute;width:52px;height:52px;border-radius:50%;background:#020403;box-shadow:inset 0 4px 8px #222}
+.p1{top:-19px;left:-19px}.p2{top:-19px;right:-19px}.p3{bottom:-19px;left:-19px}.p4{bottom:-19px;right:-19px}.p5{top:50%;left:-19px;transform:translateY(-50%)}.p6{top:50%;right:-19px;transform:translateY(-50%)}
+.ball{position:absolute;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:900;color:#111;box-shadow:inset -5px -7px 10px rgba(0,0,0,.4),inset 5px 5px 8px rgba(255,255,255,.35),0 6px 8px rgba(0,0,0,.3)}
+.ball:after{content:"";width:18px;height:18px;background:#fff;border-radius:50%;position:absolute}.ball b{z-index:2}.white{background:#eee}.yellow{background:#f4cf22}.red{background:#e53935}.blue{background:#286de0}.orange{background:#f28b22}.purple{background:#7c3bb7}.green{background:#1e9b55}.black{background:#111;color:#fff}
+.b1{left:49%;top:45%}.b2{left:57%;top:38%}.b3{left:57%;top:53%}.b4{left:65%;top:45%}.b5{left:42%;top:52%}.b6{left:34%;top:43%}.b7{left:28%;top:35%}.b8{left:20%;top:55%}.cue{position:absolute;width:75%;height:7px;background:linear-gradient(#c99250,#f0c17a,#8b5725);left:8%;top:67%;transform:rotate(-28deg);border-radius:5px;box-shadow:0 4px 8px #111}
+section{padding:95px 7%}.section-title{text-align:center;max-width:680px;margin:0 auto 50px}.section-title h2{font-size:42px;margin:0 0 12px}.section-title p{color:#9fb1a5;line-height:1.6}
+.features{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}.card{padding:28px;background:#0c1912;border:1px solid #203b29;border-radius:20px}.icon{font-size:30px}.card h3{margin:18px 0 8px}.card p{color:#96a89c;line-height:1.5;font-size:14px}
+.how{background:#08150e}.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}.step{position:relative;padding:28px;border-radius:20px;background:#0e2116;border:1px solid #24442e}.num{font-size:42px;font-weight:900;color:#55e36b}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;text-align:center}.stat{padding:35px;background:#0b1811;border-radius:20px}.stat strong{font-size:38px;color:#76ee88}.stat span{display:block;color:#9cac9f;margin-top:8px}
+.cta{text-align:center;background:radial-gradient(circle at center,#124725,#07110d 60%)}.cta h2{font-size:50px;margin:0 0 15px}.cta p{color:#b7c7bc;margin-bottom:28px}
+footer{padding:30px 7%;display:flex;justify-content:space-between;color:#829287;font-size:13px;border-top:1px solid #17271d}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.78);display:none;place-items:center;z-index:20;padding:20px}.modal.open{display:grid}.gamebox{width:min(600px,100%);background:#0c1912;border:1px solid #31543a;border-radius:22px;padding:28px;text-align:center}.gamebox h2{margin-top:0}.breakball{width:90px;height:90px;margin:25px auto;border-radius:50%;background:#111;display:grid;place-items:center;font-size:28px;font-weight:900;box-shadow:0 15px 35px #000}
+@media(max-width:850px){.hero{grid-template-columns:1fr;text-align:center;padding-top:120px}.hero p{margin:auto}.actions{justify-content:center}.table{margin:auto}.features,.steps{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr}.navlinks{display:none}}
+@media(max-width:520px){section{padding:70px 5%}.features,.steps{grid-template-columns:1fr}.hero{padding-left:5%;padding-right:5%}.table{border-width:16px}.pocket{width:38px;height:38px}.ball{width:32px;height:32px}.cta h2{font-size:38px}}
+</style>
+</head>
+<body>
+<nav><div class="logo">BREAK<span>MASTERS</span></div><div class="navlinks"><a href="#features">Features</a><a href="#how">How It Works</a><a href="#stats">Stats</a></div><a class="btn" href="#play" onclick="openGame()">PLAY NOW</a></nav>
+
+<header class="hero">
+<div>
+<span class="badge">ONLINE POOL • FREE TO PLAY</span>
+<h1>BREAK.<br>PLAY.<br><span style="color:#55e36b">DOMINATE.</span></h1>
+<p>Step up to the table and test your aim. Challenge friends, master your shots, and climb toward pool-champion status.</p>
+<div class="actions"><a class="btn" href="#play" onclick="openGame()">🎱 PLAY NOW</a><a class="btn ghost" href="#how">HOW IT WORKS</a></div>
+</div>
+<div class="table">
+<div class="pocket p1"></div><div class="pocket p2"></div><div class="pocket p3"></div><div class="pocket p4"></div><div class="pocket p5"></div><div class="pocket p6"></div>
+<div class="ball yellow b1"><b>1</b></div><div class="ball blue b2"><b>2</b></div><div class="ball red b3"><b>3</b></div><div class="ball purple b4"><b>4</b></div><div class="ball orange b5"><b>5</b></div><div class="ball green b6"><b>6</b></div><div class="ball red b7"><b>7</b></div><div class="ball black b8"><b>8</b></div><div class="ball white" style="left:13%;top:68%"></div><div class="cue"></div>
+</div>
+</header>
+
+<section id="features"><div class="section-title"><h2>Everything you need to play</h2><p>A polished arcade-pool experience built around quick matches, precision and friendly competition.</p></div>
+<div class="features"><div class="card"><div class="icon">🌐</div><h3>Play Online</h3><p>Jump into matches and put your skills to the test.</p></div><div class="card"><div class="icon">👥</div><h3>Challenge Friends</h3><p>Invite your friends and settle the score at the table.</p></div><div class="card"><div class="icon">🏆</div><h3>Compete</h3><p>Win matches and work your way toward the top.</p></div><div class="card"><div class="icon">🎯</div><h3>Master Your Aim</h3><p>Practice your angles, power and cue control.</p></div></div></section>
+
+<section class="how" id="how"><div class="section-title"><h2>How it works</h2><p>Four simple steps from the break to the final ball.</p></div>
+<div class="steps"><div class="step"><div class="num">01</div><h3>Choose a match</h3><p>Pick an opponent and enter the table.</p></div><div class="step"><div class="num">02</div><h3>Break</h3><p>Line up your cue and make the opening shot.</p></div><div class="step"><div class="num">03</div><h3>Sink balls</h3><p>Use precision and strategy to clear your group.</p></div><div class="step"><div class="num">04</div><h3>Win</h3><p>Finish the table and claim the match.</p></div></div></section>
+
+<section id="stats"><div class="section-title"><h2>The table is waiting</h2><p>Built for quick games and repeat play.</p></div><div class="stats"><div class="stat"><strong>1M+</strong><span>Games played</span></div><div class="stat"><strong>500K+</strong><span>Players</span></div><div class="stat"><strong>24/7</strong><span>Matches</span></div></div></section>
+
+<section class="cta" id="play"><h2>Ready to break?</h2><p>Grab the cue, line up your shot and make your move.</p><button class="btn" onclick="openGame()">PLAY NOW 🎱</button></section>
+
+<footer><div>© 2026 BreakMasters. Original fan-style concept.</div><div>Privacy • Terms • Contact</div></footer>
+
+<div class="modal" id="modal"><div class="gamebox"><h2>🎱 BreakMasters</h2><p>Your game area can be connected here to your actual pool game.</p><div class="breakball">8</div><button class="btn" onclick="closeGame()">BACK TO LANDING PAGE</button></div></div>
+<script>
+function openGame(){document.getElementById('modal').classList.add('open')}
+function closeGame(){document.getElementById('modal').classList.remove('open')}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeGame()})
+</script>
+</body>
+</html>
